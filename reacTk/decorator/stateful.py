@@ -63,7 +63,7 @@ def stateful(cls: Type[T]) -> Type[T]:
         Afterwards we use tkinters `after` method to remove this callback and instead fire an event, which we
         bind the widget to.
         The reason for this convoluted event handling is that using tk events is only possible
-        once the mainloop has started. Thus, if we do not do it this way, changes done to the state before 
+        once the mainloop has started. Thus, if we do not do it this way, changes done to the state before
         the mainloop will not be handled.
         """
         callback_id = self._state.on_change(self.draw, trigger=True)

@@ -1,4 +1,3 @@
-from typing import Any
 from widget_state import DictState, IntState
 
 from .point import PointState

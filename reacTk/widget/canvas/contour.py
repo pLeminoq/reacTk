@@ -1,6 +1,5 @@
 from typing import Callable, Literal, Optional
 
-import numpy as np
 import tkinter as tk
 from widget_state import HigherOrderState, IntState
 

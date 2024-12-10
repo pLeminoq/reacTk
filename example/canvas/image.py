@@ -14,7 +14,6 @@ from reacTk.widget.canvas.image import (
     ImageData,
     ImageStyle,
     ImageState,
-    img_to_tk,
 )
 
 from .lib import App

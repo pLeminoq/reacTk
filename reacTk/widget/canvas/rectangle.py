@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Optional
 
 import tkinter as tk
 from widget_state import DictState, HigherOrderState, IntState, StringState

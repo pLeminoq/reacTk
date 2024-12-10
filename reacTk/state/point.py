@@ -1,5 +1,3 @@
-from typing import Union
-
 from widget_state import IntState, DictState
 
 
