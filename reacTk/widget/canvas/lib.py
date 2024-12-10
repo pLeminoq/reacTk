@@ -4,6 +4,7 @@ from typing_extensions import Self
 import tkinter as tk
 from widget_state import State
 
+
 class CanvasItem:
 
     def __init__(self, canvas: tk.Canvas, state: State):

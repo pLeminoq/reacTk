@@ -66,7 +66,6 @@ class Rectangle(CanvasItem):
 
         self.id = None
 
-
     def draw(self, state: RectangleState):
         if self.id is None:
             self.id = self.canvas.create_rectangle(*state.data.ltbr())

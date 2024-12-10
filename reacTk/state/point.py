@@ -16,6 +16,7 @@ class PointState(DictState):
         self.x = IntState(x) if isinstance(x, int) else x
         self.y = IntState(y) if isinstance(y, int) else y
 
+
 if __name__ == "__main__":
     pt = PointState(5, 10)
     print(pt)

@@ -3,6 +3,7 @@ Demo application that draws different items on a canvas (bounding box, circle, l
 
 It also demonstrates different ways of styling an interacting with the items.
 """
+
 from reacTk.state import PointState
 from reacTk.widget.canvas.bounding_box import (
     BoundingBox,
