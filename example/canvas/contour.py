@@ -7,13 +7,10 @@ The contour can be modified:
   * vertices can be added by double-clicking somewhere on a line
 """
 
-import tkinter as tk
-
 from reacTk.state import PointState
 from reacTk.widget.canvas.contour import (
     Contour,
     ContourData,
-    ContourStyle,
     ContourState,
 )
 

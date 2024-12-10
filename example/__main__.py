@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from reacTk.widget.chechbox import Checkbox, CheckBoxData, CheckboxState, CheckBoxStyle
-from reacTk.widget.label import Label, LabelData, LabelState, LabelStyle
+from reacTk.widget.label import Label, LabelData, LabelState
 
 root = tk.Tk()
 root.bind("<Key-q>", lambda event: exit(0))
