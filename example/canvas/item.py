@@ -38,11 +38,15 @@ class ItemApp(App):
         )
         self.rectangle.tag_bind(
             "<Button-1>",
-            lambda event, rectangle: self.rectangle._state.style.outline_color.set("red"),
+            lambda event, rectangle: self.rectangle._state.style.outline_color.set(
+                "red"
+            ),
         )
         self.rectangle.tag_bind(
             "<Button-3>",
-            lambda event, rectangle: self.rectangle._state.data.center.set(event.x, event.y),
+            lambda event, rectangle: self.rectangle._state.data.center.set(
+                event.x, event.y
+            ),
         )
 
         self.line = Line(
