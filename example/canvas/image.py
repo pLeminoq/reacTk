@@ -9,6 +9,7 @@ import cv2 as cv
 import numpy as np
 from widget_state import BoolState, StringState
 
+from reacTk.state import PointState
 from reacTk.widget.canvas.image import (
     Image,
     ImageData,
@@ -35,7 +36,11 @@ class ImageApp(App):
             self.canvas,
             ImageState(
                 ImageData(foreground_image_array),
-                ImageStyle(background=BoolState(False), fit=StringState("none")),
+                ImageStyle(
+                    position=PointState(400, 400),
+                    background=BoolState(False),
+                    fit=StringState("none"),
+                ),
             ),
         )
         foreground_image.tag_bind(
