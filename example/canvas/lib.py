@@ -4,6 +4,8 @@ Bundle common functionalities of all examples."
 
 import tkinter as tk
 
+from reacTk.widget.canvas import Canvas, CanvasState
+
 
 class App(tk.Tk):
 
@@ -13,7 +15,8 @@ class App(tk.Tk):
         self.bind("<Key-q>", lambda event: exit(0))
 
         # self.canvas = tk.Canvas(self, width=width, height=height)
-        self.canvas = tk.Canvas(self)
+        # self.canvas = tk.Canvas(self)
+        self.canvas = Canvas(self, CanvasState())
         self.canvas.grid(row=0, column=0, sticky="nsew")
 
         self.rowconfigure(0, weight=1)

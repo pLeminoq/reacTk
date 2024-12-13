@@ -1,5 +1,4 @@
 from typing import Optional
-import tkinter as tk
 
 import cv2 as cv
 import numpy as np
@@ -11,6 +10,7 @@ from widget_state import BasicState, BoolState, HigherOrderState, StringState
 
 from ...state import PointState
 from ...decorator import stateful
+from .canvas import Canvas
 from .lib import CanvasItem
 
 
@@ -86,7 +86,7 @@ class Image(CanvasItem):
     implicitly define its dimensions via its parent.
     """
 
-    def __init__(self, canvas: tk.Canvas, state: ImageState):
+    def __init__(self, canvas: Canvas, state: ImageState):
         super().__init__(canvas, state)
 
         self.img_tk = None
@@ -97,26 +97,15 @@ class Image(CanvasItem):
         self.canvas_height = self.canvas.winfo_height()
 
         if state.style.fit.value != "none":
-            state.style.position.set(self.canvas_width // 2, self.canvas_height // 2)
+            state.style.position.depends_on(
+                [canvas._state],
+                lambda: PointState(
+                    canvas._state.width.value // 2, canvas._state.height.value // 2
+                ),
+                kwargs={},
+            )
 
         self.scale_x = self.scale_y = 1.0
-        self.on_resize_id = self.canvas.bind("<Configure>", self.on_canvas_resize)
-
-    def on_canvas_resize(self, event):
-        if self._state.style.fit.value == "none":
-            return
-
-        # the event width and height values contain border width and
-        # other contributions that we need to exclude
-        border_width = int(self.canvas["bd"])
-        highlight_thickness = int(self.canvas["highlightthickness"])
-        self.canvas_width = event.width - 2 * (border_width + highlight_thickness)
-        self.canvas_height = event.height - 2 * (border_width + highlight_thickness)
-
-        # update position which trigger drawing
-        with self._state as state:
-            state.style.position.x.set(self.canvas_width // 2)
-            state.style.position.y.set(self.canvas_height // 2)
 
     def compute_scales(self) -> tuple[float, float]:
         """
@@ -134,8 +123,8 @@ class Image(CanvasItem):
         tuple of float
             scaling factors in x and y directions
         """
-        scale_x = self.canvas_width / self._state.data.value.shape[1]
-        scale_y = self.canvas_height / self._state.data.value.shape[0]
+        scale_x = self.canvas._state.width.value / self._state.data.value.shape[1]
+        scale_y = self.canvas._state.height.value / self._state.data.value.shape[0]
 
         fit = self._state.style.fit.value
         if fit == "fill":
