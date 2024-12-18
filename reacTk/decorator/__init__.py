@@ -1,4 +1,4 @@
-from .asnychron import asynchron
+from .asynchron import asynchron
 from .recurrency_filter import recurrency_filter
 from .stateful import stateful
 
