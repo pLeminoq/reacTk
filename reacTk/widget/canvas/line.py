@@ -1,7 +1,7 @@
 from typing import Optional
 
 import tkinter as tk
-from widget_state import DictState, HigherOrderState, IntState, StringState
+from widget_state import DictState, HigherOrderState, IntState, StringState, ListState
 
 from ...state import PointState
 from ...decorator import stateful
@@ -22,11 +22,13 @@ class LineStyle(DictState):
         self,
         color: Optional[str | StringState] = None,
         width: Optional[int | IntState] = None,
+        dash: Optional[ListState[IntState]] = None,
     ):
         super().__init__()
 
         self.color = color if isinstance(color, StringState) else StringState(color)
         self.width = width if isinstance(width, IntState) else IntState(width)
+        self.dash = ListState() if dash is None else dash
 
 
 class LineState(HigherOrderState):
@@ -58,7 +60,10 @@ class Line(CanvasItem):
             self.id, *state.data.start.values(), *state.data.end.values()
         )
         self.canvas.itemconfig(
-            self.id, fill=state.style.color.value, width=state.style.width.value
+            self.id,
+            fill=state.style.color.value,
+            width=state.style.width.value,
+            dash=[s.value for s in state.style.dash],
         )
 
 
