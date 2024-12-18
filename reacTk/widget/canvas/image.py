@@ -170,17 +170,35 @@ class Image(CanvasItem):
         -------
         tuple[int, int]
         """
+        x, y = self.to_image_continuous(x, y)
+        x = round(x)
+        y = round(y)
+        return x, y
+
+    def to_image_continuous(self, x: int, y: int) -> tuple[float, float]:
+        """
+        Transform x-, and y-coordinates from canvas space to image space.
+
+        Parameters
+        ----------
+        x: int
+        y: int
+
+        Returns
+        -------
+        tuple[int, int]
+        """
         image_width = self._state.data.value.shape[1]
         image_height = self._state.data.value.shape[0]
 
-        t_x = (self.canvas_width - image_width * self.scale_x) // 2
-        t_y = (self.canvas_height - image_height * self.scale_y) // 2
+        t_x = (self.canvas._state.width.value - image_width * self.scale_x) // 2
+        t_y = (self.canvas._state.height.value - image_height * self.scale_y) // 2
 
-        x = round((x - t_x) / self.scale_x)
-        y = round((y - t_y) / self.scale_y)
+        x = (x - t_x) / self.scale_x
+        y = (y - t_y) / self.scale_y
         return x, y
 
-    def to_canvas(self, x: int, y: int) -> tuple[int, int]:
+    def to_canvas(self, x: int | float, y: int | float) -> tuple[int, int]:
         """
         Transform x-, and y-coordinates from image space to canvas space.
 
@@ -196,8 +214,8 @@ class Image(CanvasItem):
         image_width = self._state.data.value.shape[1]
         image_height = self._state.data.value.shape[0]
 
-        t_x = (self.canvas_width - image_width * self.scale_x) // 2
-        t_y = (self.canvas_height - image_height * self.scale_y) // 2
+        t_x = (self.canvas._state.width.value - image_width * self.scale_x) // 2
+        t_y = (self.canvas._state.height.value - image_height * self.scale_y) // 2
 
         x = round(x * self.scale_x + t_x)
         y = round(y * self.scale_y + t_y)
