@@ -29,6 +29,9 @@ class Canvas(tk.Canvas):
     def __init__(self, parent: tk.Widget, state: CanvasState):
         super().__init__(parent)
 
+        self._state.width.value = int(self["width"])
+        self._state.height.value = int(self["height"])
+
         self.bind("<Configure>", self.on_resize)
 
     def on_resize(self, event):
