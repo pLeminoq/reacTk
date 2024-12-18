@@ -18,6 +18,7 @@ from reacTk.widget.canvas.rectangle import (
     RectangleStyle,
     RectangleState,
 )
+from reacTk.widget.canvas.text import Text, TextData, TextStyle, TextState
 
 from .lib import App
 
@@ -77,6 +78,14 @@ class ItemApp(App):
             rect.tag_bind(
                 "<B1-Motion>", lambda ev, rect: rect._state.data.center.set(ev.x, ev.y)
             )
+
+        self.text = Text(
+            self.canvas,
+            TextState(
+                TextData("Hello World", position=PointState(400, 400)),
+                style=TextStyle(color="orange"),
+            ),
+        )
 
 
 if __name__ == "__main__":
