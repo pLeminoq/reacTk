@@ -92,10 +92,6 @@ class Image(CanvasItem):
         self.img_tk = None
         self.id = None
 
-        self.canvas.update_idletasks()
-        self.canvas_width = self.canvas.winfo_width()
-        self.canvas_height = self.canvas.winfo_height()
-
         if state.style.fit.value != "none":
             state.style.position.depends_on(
                 [canvas._state],
