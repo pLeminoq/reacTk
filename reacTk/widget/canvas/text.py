@@ -23,8 +23,12 @@ class TextStyle(DictState):
         self.color = color if isinstance(color, StringState) else StringState(color)
         self.anchor = anchor if isinstance(anchor, StringState) else StringState(anchor)
         self.angle = angle if isinstance(angle, IntState) else IntState(angle)
-        self.font_name = font_name if isinstance(font_name, StringState) else StringState(font_name)
-        self.font_size = font_size if isinstance(font_size, IntState) else IntState(font_size)
+        self.font_name = (
+            font_name if isinstance(font_name, StringState) else StringState(font_name)
+        )
+        self.font_size = (
+            font_size if isinstance(font_size, IntState) else IntState(font_size)
+        )
 
 
 class TextData(HigherOrderState):
