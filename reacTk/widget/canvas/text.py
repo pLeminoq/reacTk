@@ -15,12 +15,16 @@ class TextStyle(DictState):
         color: Optional[str | StringState] = None,
         anchor: Optional[str | StringState] = None,
         angle: Optional[int | IntState] = None,
+        font_name: Optional[str | StringState] = None,
+        font_size: Optional[int | IntState] = 12,
     ):
         super().__init__()
 
         self.color = color if isinstance(color, StringState) else StringState(color)
         self.anchor = anchor if isinstance(anchor, StringState) else StringState(anchor)
         self.angle = angle if isinstance(angle, IntState) else IntState(angle)
+        self.font_name = font_name if isinstance(font_name, StringState) else StringState(font_name)
+        self.font_size = font_size if isinstance(font_size, IntState) else IntState(font_size)
 
 
 class TextData(HigherOrderState):
@@ -59,4 +63,5 @@ class Text(CanvasItem):
             fill=state.style.color.value,
             anchor=state.style.anchor.value,
             angle=state.style.angle.value,
+            font=(state.style.font_name.value, state.style.font_size.value),
         )
