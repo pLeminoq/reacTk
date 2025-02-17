@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from widget_state import FloatState, IntState, DictState, State
+from widget_state import NumberState, DictState, State, compute
 
-NT = TypeVar("NT", IntState, FloatState)
-
+NT = TypeVar("NT", int, float)
 
 class PointState(DictState, Generic[NT]):
     """
@@ -16,23 +15,35 @@ class PointState(DictState, Generic[NT]):
 
     def __init__(
         self,
-        x: int | IntState | float | FloatState,
-        y: int | IntState | float | FloatState,
+        x: NT | NumberState[NT],
+        y: NT | NumberState[NT],
     ):
         super().__init__()
 
-        self.x = x if isinstance(x, State) else x
-        self.y = y if isinstance(y, State) else y
+        self.x = x if isinstance(x, NumberState) else NumberState(x)
+        self.y = y if isinstance(y, NumberState) else NumberState(y)
 
-    def __add__(self, other: PointState[NT]) -> PointState[NT]:
-        return PointState(self.x.value + other.x.value, self.y.value + other.y.value)
+    def __add__(self, other: NumberState | PointState[NT]) -> PointState[NT]:
+        other = other if isinstance(other, PointState) else PointState(other, other)
+        return PointState(self.x + other.x, self.y + other.y)
 
-    def __sub__(self, other: PointState[NT]):
-        return PointState(self.x.value - other.x.value, self.y.value - other.y.value)
+    def __sub__(self, other: NumberState | PointState[NT]) -> PointState[NT]:
+        other = other if isinstance(other, PointState) else PointState(other, other)
+        return PointState(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, other: NumberState | PointState[NT]) -> PointState[NT]:
+        other = other if isinstance(other, PointState) else PointState(other, other)
+        return PointState(self.x * other.x, self.y * other.y)
 
 
 if __name__ == "__main__":
     pt1 = PointState(5.0, 3.141)
     pt2 = PointState(2.0, 2.7)
-    print(pt1 + pt2)
-    print(pt1 - pt2)
+
+    res = pt2 * NumberState(5)
+    # res = pt1 - pt2
+    res.on_change(lambda _: print(f"Res: {res}"), trigger=True)
+    print()
+
+    pt2.x.value = 200
+    print()

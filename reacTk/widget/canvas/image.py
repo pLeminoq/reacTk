@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 from PIL import ImageTk
 from PIL import Image as PILImage
 
-from widget_state import BasicState, BoolState, HigherOrderState, StringState
+from widget_state import BasicState, BoolState, HigherOrderState, StringState, compute
 
 from ...state import PointState
 from ...decorator import stateful
@@ -103,6 +103,9 @@ class Image(CanvasItem):
 
         self.scale_x = self.scale_y = 1.0
 
+    def array(self):
+        return self._state.data.value
+
     def compute_scales(self) -> tuple[float, float]:
         """
         Compute scaling factors for the image depending on the fit mode.
@@ -152,6 +155,9 @@ class Image(CanvasItem):
 
         if state.style.background.value:
             self.canvas.tag_lower(self.id)
+
+    def point_to_canvas(self, pt: PointState) -> PointState:
+        return compute([self._state, pt], lambda: PointState(*self.to_canvas(pt.x.value, pt.y.value)))
 
     def to_image(self, x: int, y: int) -> tuple[int, int]:
         """

@@ -1,15 +1,16 @@
 import tkinter as tk
 
-from widget_state import BoolState, IntState, FloatState, StringState
+from widget_state import BoolState, NumberState, StringState
 
 
-def to_tk_var(state: BoolState | FloatState | IntState | StringState) -> tk.Variable:
+def to_tk_var(state: BoolState | NumberState | StringState) -> tk.Variable:
     if isinstance(state, BoolState):
         variable = tk.BooleanVar(value=state.value)
-    elif isinstance(state, FloatState):
-        variable = tk.DoubleVar(value=state.value)
-    elif isinstance(state, IntState):
-        variable = tk.IntVar(value=state.value)
+    elif isinstance(state, NumberState):
+        if isinstance(state.value, int):
+            variable = tk.IntVar(value=state.value)
+        else:
+            variable = tk.DoubleVar(value=state.value)
     elif isinstance(state, StringState):
         variable = tk.StringVar(value=state.value)
     else:
