@@ -6,7 +6,14 @@ from numpy.typing import NDArray
 from PIL import ImageTk
 from PIL import Image as PILImage
 
-from widget_state import BasicState, BoolState, HigherOrderState, StringState, compute
+from widget_state import (
+    BasicState,
+    BoolState,
+    HigherOrderState,
+    StringState,
+    compute,
+    NumberState,
+)
 
 from ...state import PointState
 from ...decorator import stateful
@@ -21,6 +28,18 @@ class ImageData(BasicState[NDArray]):
 
     def __init__(self, value: NDArray):
         super().__init__(value, verify_change=False)
+
+        self.value = value
+
+    def width(self):
+        _width = NumberState(0)
+        self.on_change(lambda _: _width.set(self.value.shape[1]), trigger=True)
+        return _width
+
+    def height(self):
+        _height = NumberState(0)
+        self.on_change(lambda _: _height.set(self.value.shape[0]), trigger=True)
+        return _height
 
 
 class ImageStyle(HigherOrderState):
@@ -91,6 +110,7 @@ class Image(CanvasItem):
 
         self.img_tk = None
         self.id = None
+        self.data = self._state.data
 
         if state.style.fit.value != "none":
             state.style.position.depends_on(
@@ -157,7 +177,10 @@ class Image(CanvasItem):
             self.canvas.tag_lower(self.id)
 
     def point_to_canvas(self, pt: PointState) -> PointState:
-        return compute([self._state, pt], lambda: PointState(*self.to_canvas(pt.x.value, pt.y.value)))
+        return compute(
+            [self._state, pt],
+            lambda: PointState(*self.to_canvas(pt.x.value, pt.y.value)),
+        )
 
     def to_image(self, x: int, y: int) -> tuple[int, int]:
         """

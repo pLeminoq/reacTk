@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from widget_state import NumberState, DictState, State, compute
+from widget_state import NumberState, DictState
 
 NT = TypeVar("NT", int, float)
+
 
 class PointState(DictState, Generic[NT]):
     """
