@@ -1,4 +1,4 @@
-numpy==1.21.0
+numpy==1.26.0
 opencv-python==4.10.0.84
 pillow==11.0.0
 screeninfo==0.8.1
