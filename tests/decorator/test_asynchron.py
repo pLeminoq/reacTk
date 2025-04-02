@@ -1,33 +1,65 @@
+"""
+Tests for the asynchron decorators.
+Note that these tests become complicated quickly because it must be ensured
+that the asynchron methods have started/finished.
+This is usually achieved by acquiring/releasing locks.
+"""
+
 import time
 import threading
 
-from reacTk.decorator.asynchron import asynchron, asynchron_self
+from reacTk.decorator import async_once
 
-print(f"Create class ...")
-class AsyncClass:
 
-    def __init__(self, value, name):
+wait_lock = threading.Lock()
+exec_lock = threading.Lock()
+exec_lock.acquire()
+n_executions = []
+
+
+@async_once
+def async_once_method():
+    n_executions.append(1)
+    if exec_lock.locked():
+        exec_lock.release()
+
+    with wait_lock:
+        pass
+
+
+def test_async_once():
+    with wait_lock:
+        async_once_method()
+        async_once_method()
+        async_once_method()
+        async_once_method()
+        with exec_lock:
+            pass
+    assert len(n_executions) == 1
+
+
+class BlockingInstanceMethod:
+    """ """
+
+    def __init__(self, value):
         self.lock = threading.Lock()
         self.value = value
-        self.name = name
 
         self.exec_lock = threading.Lock()
         self.exec_lock.acquire()
 
-    @asynchron
+    @async_once
     def increment(self):
-        # self.value = self.value + 1
         self.value = self.value + 1
-        print(f"{self.name=} release exec lock to mark execution start ...")
         self.exec_lock.release()
 
-        print(f"{self.name} rncrement to {self.value=}. Acquire lock on {self.name}")
         with self.lock:
             pass
 
+
 def test_async_on_instance_method():
-    instance_a = AsyncClass(0, name="a")
-    instance_b = AsyncClass(10, name="b")
+    instance_a = BlockingInstanceMethod(0)
+    instance_b = BlockingInstanceMethod(10)
 
     with instance_a.lock:
         instance_a.increment()
@@ -41,7 +73,6 @@ def test_async_on_instance_method():
 
         assert instance_a.value == 1
         assert instance_b.value == 11
-
 
 
 if __name__ == "__main__":
