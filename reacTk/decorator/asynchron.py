@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import functools
+import inspect
 import threading
 from typing import Callable, Generic, Optional, ParamSpec
 from warnings import warn
@@ -9,6 +10,12 @@ P = ParamSpec("P")
 
 
 def is_instance_method(func: Callable) -> bool:
+    """
+    Utility method to test if a function is an instance method - a method of a class.
+
+    It is checked, whether the function has at least one argument and if the
+    argument is called `self`.
+    """
     params = list(inspect.signature(func).parameters.values())
     return len(params) > 0 and params[0].name == "self"
 
@@ -61,20 +68,9 @@ def asynchron(func: Callable[P, None]) -> Callable[P, None]:
     return wrapper
 
 def async_once(func: Callable[P, None]) -> Callable[P, None]:
-    # async_data = AsyncData()
     async_data_map_lock = threading.Lock()
     async_data_map = {}
-
-    # def wait():
-    #     print(f"Wait for func ...{func.__name__=}")
-    #     for i, async_data in enumerate(async_data_map.values()):
-    #         print(f" - Lock {i=}")
-    #         with async_data.lock:
-    #             pass
-    #
-    # func.__wait = wait
-
-    func.__async_data_map = async_data_map
+    func_is_instance_method = is_instance_method(func)
 
     def trigger_pending(async_data) -> None:
         async_data.current_call.join()
@@ -89,9 +85,8 @@ def async_once(func: Callable[P, None]) -> Callable[P, None]:
 
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> None:
-        print(f"Call to func {func.__name__=}")
         with async_data_map_lock:
-            _self = args[0]
+            _self = args[0] if func_is_instance_method else 0
             if _self not in async_data_map:
                 async_data_map[_self] = AsyncData()
             async_data = async_data_map[_self]
@@ -101,7 +96,6 @@ def async_once(func: Callable[P, None]) -> Callable[P, None]:
                 async_data.current_call = threading.Thread(
                     target=func, args=args, kwargs=kwargs
                 )
-                print(f"Start current call")
                 async_data.current_call.start()
                 return
 
