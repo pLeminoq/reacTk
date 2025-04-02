@@ -67,6 +67,7 @@ def asynchron(func: Callable[P, None]) -> Callable[P, None]:
 
     return wrapper
 
+
 def async_once(func: Callable[P, None]) -> Callable[P, None]:
     async_data_map_lock = threading.Lock()
     async_data_map = {}
@@ -105,8 +106,9 @@ def async_once(func: Callable[P, None]) -> Callable[P, None]:
                 async_data.pending_call is None
                 or async_data.pending_call.is_alive() is False
             ):
-                async_data.pending_call = threading.Thread(target=trigger_pending, args=[async_data])
+                async_data.pending_call = threading.Thread(
+                    target=trigger_pending, args=[async_data]
+                )
                 async_data.pending_call.start()
-
 
     return wrapper
